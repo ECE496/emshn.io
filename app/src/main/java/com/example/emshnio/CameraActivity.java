@@ -67,8 +67,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         try {
             tflite = new Interpreter(loadModelFile());
-            InputStream is = this.getAssets().open("nikola_happy.jpg");
-            netInput = BitmapFactory.decodeStream(is);
+//            InputStream is = this.getAssets().open("nikola_happy.jpg");
+//            netInput = BitmapFactory.decodeStream(is);
 
 
             float [][][][] img = new float[1][200][200][3];
