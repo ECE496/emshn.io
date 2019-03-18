@@ -30,11 +30,6 @@
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/piechart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.github.mikephil.charting.charts.PieChart>
-
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barchart"
         android:layout_width="match_parent"

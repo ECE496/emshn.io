@@ -1,10 +1,12 @@
 package com.example.emshnio;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -38,9 +40,11 @@ public class ResultsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        PieChart pieChart = findViewById(R.id.piechart);
-        pieChart.setUsePercentValues(true);
+        //PieChart pieChart = findViewById(R.id.piechart);
+        //pieChart.setUsePercentValues(true);
         BarChart barChart = findViewById(R.id.barchart);
+        barChart.setNoDataText("");
+        barChart.getDescription().setEnabled(false);
 
         //List<PieEntry> value = new ArrayList<>();
         List<BarEntry> entries= new ArrayList<>();
@@ -72,13 +76,19 @@ public class ResultsActivity extends AppCompatActivity {
         entries.add(new BarEntry(6f, anger));
 
         BarDataSet set = new BarDataSet(entries, "Emotion Distribution");
+        //set.setColors(new int[] {Color.GRAY, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.MAGENTA, Color.DKGRAY});
         BarData data = new BarData(set);
         data.setBarWidth(0.9f); // set custom bar width
+        data.setValueTextSize(15f);
         barChart.setData(data);
         barChart.setFitBars(true); // make the x-axis fit exactly all bars
+        barChart.setDrawValueAboveBar(false);
         set.setColors(ColorTemplate.JOYFUL_COLORS);
-        barChart.animateXY(1400,1400);
+        barChart.animateXY(1500,1500);
         barChart.invalidate(); // refresh
+
+        Legend legend = barChart.getLegend();
+        legend.setEnabled(false);
 
         // the labels that should be drawn on the XAxis
         final String[] quarters = new String[] { "Neutral", "Happy", "Sad", "Surprise","Fear","Disgust","Anger" };
@@ -87,6 +97,9 @@ public class ResultsActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new MyXAxisValueFormatter(quarters));
         xAxis.setGranularity(1); // minimum axis-step (interval) is 1
         xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setTextSize(14.5f);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
 
         //PieDataSet pieDataSet = new PieDataSet(value, "Emotion Distribution");
         //PieData pieData = new PieData(pieDataSet);
