@@ -23,6 +23,7 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Mode;
 import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.Size;
 import com.otaliastudios.cameraview.SizeSelector;
 import com.otaliastudios.cameraview.SizeSelectors;
 import com.otaliastudios.cameraview.VideoResult;
@@ -35,9 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-
-import androidx.exifinterface.media.*;
-
+import java.util.List;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
 
@@ -107,7 +106,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-//        findViewById(R.id.edit).setOnClickListener(this);
+        findViewById(R.id.edit).setOnClickListener(this);
         findViewById(R.id.capturePicture).setOnClickListener(this);
 //        findViewById(R.id.capturePictureSnapshot).setOnClickListener(this);
 //        findViewById(R.id.captureVideo).setOnClickListener(this);
@@ -143,7 +142,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 SizeSelectors.biggest() // If none is found, take the biggest
         );
         camera.setPictureSize(result);
-        camera.setVideoSize(result);
+//        camera.setVideoSize(result);
+
+        camera.setPreviewStreamSize(result);
+
+
+
     }
 
     private void message(String content, boolean important) {
@@ -172,12 +176,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         // This can happen if picture was taken with a gesture.
         long callbackTime = System.currentTimeMillis();
         if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
-//        PicturePreviewActivity.setPictureResult(result);
+        PicturePreviewActivity.setPictureResult(result);
 
         float[][] netOutput = doInference(result);
 
-//        Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
-        Intent intent = new Intent(CameraActivity.this, ResultsActivity.class);
+        Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
+//        Intent intent = new Intent(CameraActivity.this, ResultsActivity.class);
         intent.putExtra("delay", callbackTime - mCaptureTime);
 
         float neutral = netOutput[0][0];
