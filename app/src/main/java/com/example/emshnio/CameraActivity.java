@@ -5,10 +5,12 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,6 +49,18 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private long mCaptureTime;
 
 
+
+
+    public static Bitmap doRotate(Bitmap src, float degree) {
+        // create new matrix
+        Matrix matrix = new Matrix();
+        // setup rotation degree
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    }
+
+
+
     private MappedByteBuffer loadModelFile() throws IOException {
         AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
@@ -60,9 +74,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         Interpreter tflite;
         Bitmap netInput = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length);
+
+        float rotation = (float)(pictureResult.getRotation() / 90);
+        Bitmap rotated = netInput;
+
+        if (rotation != 0) rotated = doRotate(netInput, rotation * 90);
+
         float [][] output = new float[1][7];
 
-        netInput = Bitmap.createScaledBitmap(netInput, 200, 200, false);
+        rotated = Bitmap.createScaledBitmap(rotated, 200, 200, false);
 
         try {
             tflite = new Interpreter(loadModelFile());
@@ -73,7 +93,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             float [][][][] img = new float[1][200][200][3];
             for (int i = 0; i < 200; i++){
                 for (int j = 0; j < 200; j++){
-                    int p = netInput.getPixel(j, i);
+                    int p = rotated.getPixel(j, i);
                     img[0][i][j][0] = ((p >> 16) & 0xff) / (float)255;
                     img[0][i][j][1] = ((p >> 8) & 0xff) / (float)255;
                     img[0][i][j][2] = (p & 0xff) / (float)255;
