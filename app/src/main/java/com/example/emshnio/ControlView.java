@@ -94,7 +94,7 @@ public class ControlView<Value> extends LinearLayout implements Spinner.OnItemSe
     private String stringify(Value value) {
         if (value instanceof Integer) {
             if ((Integer) value == ViewGroup.LayoutParams.MATCH_PARENT) return "match parent";
-            if ((Integer) value == ViewGroup.LayoutParams.WRAP_CONTENT) return "wrap content";
+//            if ((Integer) value == ViewGroup.LayoutParams.WRAP_CONTENT) return "wrap content";
         }
         return String.valueOf(value).replace("_", " ").toLowerCase();
     }

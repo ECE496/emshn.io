@@ -1,23 +1,26 @@
 package com.example.emshnio;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
+import android.media.FaceDetector;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.otaliastudios.cameraview.AspectRatio;
 import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraLogger;
@@ -25,20 +28,18 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Mode;
 import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.Size;
-import com.otaliastudios.cameraview.SizeSelector;
-import com.otaliastudios.cameraview.SizeSelectors;
-import com.otaliastudios.cameraview.VideoResult;
 
 import org.tensorflow.lite.Interpreter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
 
@@ -48,7 +49,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     // To show stuff in the callback
     private long mCaptureTime;
 
-
+    private Interpreter tflite;
 
 
     public static Bitmap doRotate(Bitmap src, float degree) {
@@ -58,8 +59,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         matrix.postRotate(degree);
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
-
-
 
     private MappedByteBuffer loadModelFile() throws IOException {
         AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model.tflite");
@@ -72,17 +71,50 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     private float[][] doInference(PictureResult pictureResult) {
 
-        Interpreter tflite;
-        Bitmap netInput = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length);
+        Bitmap bmp = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length);
 
         float rotation = (float)(pictureResult.getRotation() / 90);
-        Bitmap rotated = netInput;
 
-        if (rotation != 0) rotated = doRotate(netInput, rotation * 90);
+        if (rotation != 0) bmp = doRotate(bmp, rotation * 90);
 
         float [][] output = new float[1][7];
 
-        rotated = Bitmap.createScaledBitmap(rotated, 200, 200, false);
+        Bitmap bmp565 = bmp.copy(Bitmap.Config.RGB_565, false);
+        FaceDetector detector = new FaceDetector(bmp565.getWidth(), bmp565.getHeight(), 1);
+        FaceDetector.Face[] faces = new FaceDetector.Face[1];
+        detector.findFaces(bmp565, faces);
+
+        PointF mid = new PointF();
+        if (faces[0] != null){
+            faces[0].getMidPoint(mid);
+            float dist = faces[0].eyesDistance();
+            bmp = Bitmap.createBitmap(
+                    bmp,
+                    (int)(mid.x - 1.5f*dist),
+                    (int)(mid.y - 1.2f*dist),
+                    (int)(3f*dist),
+                    (int)(3f*dist));
+        }
+        bmp = Bitmap.createScaledBitmap(bmp, 200, 200, false);
+
+//        String root = getFilesDir().getAbsolutePath();
+//        File myDir = new File(root + "/saved_images");
+//        myDir.mkdirs();
+//
+//        String fname = "Image.jpg";
+//        File file = new File (myDir, fname);
+//        if (file.exists ()) file.delete ();
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
+//            out.flush();
+//            out.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
 
         try {
             tflite = new Interpreter(loadModelFile());
@@ -93,7 +125,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             float [][][][] img = new float[1][200][200][3];
             for (int i = 0; i < 200; i++){
                 for (int j = 0; j < 200; j++){
-                    int p = rotated.getPixel(j, i);
+                    int p = bmp.getPixel(j, i);
                     img[0][i][j][0] = ((p >> 16) & 0xff) / (float)255;
                     img[0][i][j][1] = ((p >> 8) & 0xff) / (float)255;
                     img[0][i][j][2] = (p & 0xff) / (float)255;
@@ -139,8 +171,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         for (Control control : controls) {
             ControlView view = new ControlView(this, control, this);
             group.addView(view,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT);
         }
 
         controlPanel.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -150,23 +181,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 b.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
         });
-
-        SizeSelector width = SizeSelectors.minWidth(200);
-        SizeSelector height = SizeSelectors.minHeight(200);
-        SizeSelector dimensions = SizeSelectors.and(width, height); // Matches sizes bigger than 1000x2000.
-        SizeSelector ratio = SizeSelectors.aspectRatio(AspectRatio.of(1, 1), 0); // Matches 1:1 sizes.
-
-        SizeSelector result = SizeSelectors.or(
-                SizeSelectors.and(ratio, dimensions), // Try to match both constraints
-                ratio, // If none is found, at least try to match the aspect ratio
-                SizeSelectors.biggest() // If none is found, take the biggest
-        );
-        camera.setPictureSize(result);
-//        camera.setVideoSize(result);
-
-        camera.setPreviewStreamSize(result);
-
-
 
     }
 
