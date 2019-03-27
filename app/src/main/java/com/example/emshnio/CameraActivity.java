@@ -84,19 +84,21 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         FaceDetector.Face[] faces = new FaceDetector.Face[1];
         detector.findFaces(bmp565, faces);
 
-        PointF mid = new PointF();
         if (faces[0] != null){
+            PointF mid = new PointF();
             faces[0].getMidPoint(mid);
             float dist = faces[0].eyesDistance();
-            bmp = Bitmap.createBitmap(
-                    bmp,
-                    (int)(mid.x - 1.5f*dist),
-                    (int)(mid.y - 1.2f*dist),
-                    (int)(3f*dist),
-                    (int)(3f*dist));
+            mid.y = mid.y + 0.3f*dist;
+
+            float cropWidth  = Math.min(Math.min(3f*dist, 2f*mid.x), 2f*(bmp.getWidth() - mid.x));
+            float cropHeight = Math.min(Math.min(3f*dist, 2f*mid.y), 2f*(bmp.getHeight() - mid.y));
+
+            float cropDim = Math.min(cropWidth, cropHeight);
+
+            bmp = Bitmap.createBitmap(bmp, (int)(mid.x - cropDim/2f), (int)(mid.y - cropDim/2f), (int)cropDim, (int)cropDim);
         }
         bmp = Bitmap.createScaledBitmap(bmp, 200, 200, false);
-
+//
 //        String root = getFilesDir().getAbsolutePath();
 //        File myDir = new File(root + "/saved_images");
 //        myDir.mkdirs();
