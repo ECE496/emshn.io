@@ -71,7 +71,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     private float[][] doInference(PictureResult pictureResult) {
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length);
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap bmp = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length, opt);
 
         float rotation = (float)(pictureResult.getRotation() / 90);
 
@@ -95,11 +97,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
             float cropDim = Math.min(cropWidth, cropHeight);
 
-            bmp = Bitmap.createBitmap(bmp, (int)(mid.x - cropDim/2f), (int)(mid.y - cropDim/2f), (int)cropDim, (int)cropDim);
-
-            BitmapFactory.Options opt = new BitmapFactory.Options();
-            opt.inMutable = true;
-            Bitmap cropBmp = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length, opt);
+            Bitmap cropBmp = bmp;
             Canvas c = new Canvas(cropBmp);
             Paint paint = new Paint();
             paint.setColor(Color.GREEN);
@@ -111,6 +109,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     mid.y - cropDim/2f + cropDim,
                     paint);
             PicturePreviewActivity.setCropBitmap(cropBmp);
+            bmp = Bitmap.createBitmap(bmp, (int)(mid.x - cropDim/2f), (int)(mid.y - cropDim/2f), (int)cropDim, (int)cropDim);
         }
         bmp = Bitmap.createScaledBitmap(bmp, 200, 200, false);
 

@@ -108,12 +108,7 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
         captureLatency.setTitleAndMessage("Approx. latency", delay + " milliseconds");
         captureResolution.setTitleAndMessage("Resolution", result.getSize() + " (" + ratio + ")");
         exifRotation.setTitleAndMessage("EXIF rotation", result.getRotation() + "");
-        result.toBitmap(new BitmapCallback() {
-            @Override
-            public void onBitmapReady(Bitmap bitmap) {
-                imageView.setImageBitmap(cropBmp);
-            }
-        });
+        imageView.setImageBitmap(cropBmp);
 
         if (result.isSnapshot()) {
             // Log the real size for debugging reason.
