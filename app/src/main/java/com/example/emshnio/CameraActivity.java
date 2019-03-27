@@ -96,27 +96,23 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             float cropDim = Math.min(cropWidth, cropHeight);
 
             bmp = Bitmap.createBitmap(bmp, (int)(mid.x - cropDim/2f), (int)(mid.y - cropDim/2f), (int)cropDim, (int)cropDim);
+
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inMutable = true;
+            Bitmap cropBmp = BitmapFactory.decodeByteArray(pictureResult.getData(), 0, pictureResult.getData().length, opt);
+            Canvas c = new Canvas(cropBmp);
+            Paint paint = new Paint();
+            paint.setColor(Color.GREEN);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(10);
+            c.drawRect(mid.x - cropDim/2f,
+                    mid.y - cropDim/2f,
+                    mid.x - cropDim/2f + cropDim,
+                    mid.y - cropDim/2f + cropDim,
+                    paint);
+            PicturePreviewActivity.setCropBitmap(cropBmp);
         }
         bmp = Bitmap.createScaledBitmap(bmp, 200, 200, false);
-//
-//        String root = getFilesDir().getAbsolutePath();
-//        File myDir = new File(root + "/saved_images");
-//        myDir.mkdirs();
-//
-//        String fname = "Image.jpg";
-//        File file = new File (myDir, fname);
-//        if (file.exists ()) file.delete ();
-//        try {
-//            FileOutputStream out = new FileOutputStream(file);
-//            bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
-//            out.flush();
-//            out.close();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
 
         try {
             tflite = new Interpreter(loadModelFile());
@@ -212,9 +208,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         // This can happen if picture was taken with a gesture.
         long callbackTime = System.currentTimeMillis();
         if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
+        float[][] netOutput = doInference(result);
         PicturePreviewActivity.setPictureResult(result);
 
-        float[][] netOutput = doInference(result);
 
         Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
 //        Intent intent = new Intent(CameraActivity.this, ResultsActivity.class);

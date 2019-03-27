@@ -24,9 +24,14 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 
 
     private static WeakReference<PictureResult> image;
+    private static Bitmap cropBmp;
 
     public static void setPictureResult(@Nullable PictureResult im) {
         image = im != null ? new WeakReference<>(im) : null;
+    }
+
+    public static void setCropBitmap(Bitmap bmp) {
+        cropBmp = bmp;
     }
 
 //    @Override
@@ -103,10 +108,10 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
         captureLatency.setTitleAndMessage("Approx. latency", delay + " milliseconds");
         captureResolution.setTitleAndMessage("Resolution", result.getSize() + " (" + ratio + ")");
         exifRotation.setTitleAndMessage("EXIF rotation", result.getRotation() + "");
-        result.toBitmap(1000, 1000, new BitmapCallback() {
+        result.toBitmap(new BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
+                imageView.setImageBitmap(cropBmp);
             }
         });
 
