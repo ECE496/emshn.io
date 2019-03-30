@@ -29,8 +29,6 @@ public class ResultsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         //PieChart pieChart = findViewById(R.id.piechart);
         //pieChart.setUsePercentValues(true);
         BarChart barChart = findViewById(R.id.barchart);
