@@ -7,6 +7,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -40,6 +41,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
+        assert extras != null;
         float neutral = extras.getFloat("neutral");
         float happy = extras.getFloat("happy");
         float sad = extras.getFloat("sad");
@@ -110,10 +112,12 @@ public class ResultsActivity extends AppCompatActivity {
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new MyXAxisValueFormatter(quarters));
         xAxis.setGranularity(1); // minimum axis-step (interval) is 1
-        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         xAxis.setTextSize(16f);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
+
+
 
     }
 
@@ -121,7 +125,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         private String[] mValues;
 
-        public MyXAxisValueFormatter(String[] values) {
+        MyXAxisValueFormatter(String[] values) {
             this.mValues = values;
         }
 
