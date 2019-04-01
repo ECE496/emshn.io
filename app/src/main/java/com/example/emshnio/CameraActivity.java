@@ -275,7 +275,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.edit: edit(); break;
-            case R.id.capturePicture: capturePicture(); break;
+            case R.id.capturePicture: capturePictureSnapshot(); break;
 //            case R.id.capturePictureSnapshot: capturePictureSnapshot(); break;
             case R.id.captureVideo: backgroundTask(); break;
 //            case R.id.captureVideoSnapshot: captureVideoSnapshot(); break;
