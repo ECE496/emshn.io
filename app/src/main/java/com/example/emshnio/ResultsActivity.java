@@ -75,42 +75,42 @@ public class ResultsActivity extends AppCompatActivity {
         float maxValue2 = 0;
         float maxValue3 = 0;
 
-        for(int i=0;i < values.length;i++) {
-            if (values[i] > maxValue1) {
-                maxValue1 = values[i];
-                max1_index = i;
-            }
-        }
-        for(int i=0;i < values.length;i++) {
-            if (values[i] > maxValue2 && values[i] < maxValue1) {
-                maxValue2 = values[i];
-                max2_index = i;
-            }
-        }
-        for(int i=0;i < values.length;i++) {
-            if (values[i] > maxValue3 && values[i] < maxValue2) {
-                maxValue3 = values[i];
-                max3_index = i;
-            }
-        }
+//        for(int i=0;i < values.length;i++) {
+//            if (values[i] > maxValue1) {
+//                maxValue1 = values[i];
+//                max1_index = i;
+//            }
+//        }
+//        for(int i=0;i < values.length;i++) {
+//            if (values[i] > maxValue2 && values[i] < maxValue1) {
+//                maxValue2 = values[i];
+//                max2_index = i;
+//            }
+//        }
+//        for(int i=0;i < values.length;i++) {
+//            if (values[i] > maxValue3 && values[i] < maxValue2) {
+//                maxValue3 = values[i];
+//                max3_index = i;
+//            }
+//        }
 
-        entries.add(new BarEntry(0f, maxValue1));
-        entries.add(new BarEntry(1f, maxValue2));
-        entries.add(new BarEntry(2f, maxValue3));
+//        entries.add(new BarEntry(0f, maxValue1));
+//        entries.add(new BarEntry(1f, maxValue2));
+//        entries.add(new BarEntry(2f, maxValue3));
 
-        //entries.add(new BarEntry(0f, neutral));
-        //entries.add(new BarEntry(1f, happy));
-        //entries.add(new BarEntry(2f, sad));
-        //entries.add(new BarEntry(3f, surprise));
-        //entries.add(new BarEntry(4f, fear));
-        //entries.add(new BarEntry(5f, disgust));
-        //entries.add(new BarEntry(6f, anger));
+        entries.add(new BarEntry(0f, neutral));
+        entries.add(new BarEntry(1f, happy));
+        entries.add(new BarEntry(2f, sad));
+        entries.add(new BarEntry(3f, surprise));
+        entries.add(new BarEntry(4f, fear));
+        entries.add(new BarEntry(5f, disgust));
+        entries.add(new BarEntry(6f, anger));
 
         BarDataSet set = new BarDataSet(entries, "Emotion Distribution");
         //set.setColors(new int[] {Color.GRAY, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.MAGENTA, Color.DKGRAY});
         BarData data = new BarData(set);
         data.setBarWidth(0.9f); // set custom bar width
-        data.setValueTextSize(17f);
+//        data.setValueTextSize(17f);
         barChart.setData(data);
         barChart.setFitBars(true); // make the x-axis fit exactly all bars
         barChart.setDrawValueAboveBar(true);
@@ -119,19 +119,21 @@ public class ResultsActivity extends AppCompatActivity {
         barChart.invalidate(); // refresh
 
         Legend legend = barChart.getLegend();
-        legend.setEnabled(false);
-
+//        legend.setEnabled(false);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+//        legend.set
         // the labels that should be drawn on the XAxis
         //final String[] quarters = new String[] { "Neutral", "Happy", "Sad", "Surprise","Fear","Disgust","Anger" };
-        final String[] quarters = new String[] {emotions[max1_index], emotions[max2_index], emotions[max3_index]};
-
+//        final String[] quarters = new String[] {emotions[max1_index], emotions[max2_index], emotions[max3_index]};
+        final String[] quarters = new String[] { "Neutral", "Happy", "Sad", "Surprise","Fear","Disgust","Anger" };
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new MyXAxisValueFormatter(quarters));
         xAxis.setGranularity(1); // minimum axis-step (interval) is 1
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
-        xAxis.setTextSize(16f);
-        xAxis.setDrawAxisLine(true);
-        xAxis.setDrawGridLines(false);
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+//        xAxis.setTextSize(16f);
+//        xAxis.setDrawAxisLine(true);
+//        xAxis.setDrawGridLines(false);
 
         YAxis yAxis = barChart.getAxisLeft();
         yAxis.setAxisMinimum(0);

@@ -127,6 +127,28 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
                 Log.e("PicturePreview", "The picture full size is " + result.getSize().getWidth() + "x" + result.getSize().getHeight());
             }
         }
+
+        final MessageView emotionPrediction = findViewById(R.id.first);
+
+        String[] labels = {"Neutral \uD83D\uDE10", "Happy \uD83D\uDE00", "Sad \uD83D\uDE22", "Surprise \uD83D\uDE32", "Fear \uD83D\uDE31", "Disgust \uD83E\uDD22", "Anger \uD83D\uDE21"};
+
+        int labelIndex = 0;
+        float maxVal = -1.0f;
+        for (int i = 0; i < inferenceResult.get()[0].length; i++) {
+            if (inferenceResult.get()[0][i] > maxVal ) {
+                maxVal = inferenceResult.get()[0][i];
+                labelIndex = i;
+            }
+        }
+//        float happy = extras.getFloat("happy");
+//        float sad = extras.getFloat("sad");
+//        float surprise = extras.getFloat("surprise");
+//        float fear = extras.getFloat("fear");
+//        float disgust = extras.getFloat("disgust");
+//        float anger = extras.getFloat("angry");
+
+        emotionPrediction.setTitleAndMessage("Emotion Prediction:", labels[labelIndex]);
+
     }
 
     @Override
