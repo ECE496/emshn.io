@@ -80,7 +80,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         entries.add(new BarEntry(0f, maxValue1));
         entries.add(new BarEntry(1f, maxValue2));
-        entries.add(new BarEntry(2f, maxValue2));
+        entries.add(new BarEntry(2f, maxValue3));
 
         //entries.add(new BarEntry(0f, neutral));
         //entries.add(new BarEntry(1f, happy));
@@ -97,7 +97,7 @@ public class ResultsActivity extends AppCompatActivity {
         data.setValueTextSize(17f);
         barChart.setData(data);
         barChart.setFitBars(true); // make the x-axis fit exactly all bars
-        barChart.setDrawValueAboveBar(false);
+        barChart.setDrawValueAboveBar(true);
         set.setColors(ColorTemplate.JOYFUL_COLORS);
         barChart.animateXY(1500,1500);
         barChart.invalidate(); // refresh
@@ -117,8 +117,8 @@ public class ResultsActivity extends AppCompatActivity {
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
 
-
-
+        YAxis yAxis = barChart.getAxisLeft();
+        yAxis.setAxisMinimum(0);
     }
 
     class MyXAxisValueFormatter implements IAxisValueFormatter {
