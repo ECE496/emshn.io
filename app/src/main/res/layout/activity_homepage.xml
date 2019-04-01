@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:background="#FF444444"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_margin="50dp"
+        android:background="@drawable/background"
+        android:onClick="onClick"
+        android:text="Photo Mode"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        app:srcCompat="@drawable/ic_photo" />
+
+    <Button
+        android:id="@+id/videoStart"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_margin="265dp"
+        android:background="@drawable/background_yellow"
+        android:text="Video Mode"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        app:srcCompat="@drawable/ic_photo" />
+
+    <Button
+        android:id="@+id/help"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_margin="480dp"
+        android:background="@drawable/background_green"
+        android:text="Help"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        app:srcCompat="@drawable/ic_photo" />
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

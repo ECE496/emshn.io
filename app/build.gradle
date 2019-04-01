@@ -16,8 +16,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    aaptOptions{
-        noCompress"tflite"
+    aaptOptions {
+        noCompress "tflite"
     }
 }
 
@@ -36,4 +36,5 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 
     api 'androidx.exifinterface:exifinterface:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }

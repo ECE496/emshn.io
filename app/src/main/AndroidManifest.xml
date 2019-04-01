@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.emshnio">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -14,10 +14,11 @@
         <activity
             android:name=".CameraActivity"
             android:configChanges="orientation|screenLayout|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true">
-
-
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".ResultsActivity" />
+        <activity android:name=".homepage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,6 @@
         <activity android:name=".PicturePreviewActivity" />
 
         <activity android:name=".ResultsActivity"/>
-
 
     </application>
 
