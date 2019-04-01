@@ -26,6 +26,12 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
     private static WeakReference<PictureResult> image;
     private static Bitmap cropBmp;
 
+    private static WeakReference<float[][]> inferenceResult;
+
+    public static void setInferenceResult(@Nullable float[][] netOutput) {
+        inferenceResult = netOutput != null ? new WeakReference<>(netOutput) : null;
+    }
+
     public static void setPictureResult(@Nullable PictureResult im) {
         image = im != null ? new WeakReference<>(im) : null;
     }
@@ -67,23 +73,23 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 
             Intent intent = new Intent(PicturePreviewActivity.this, ResultsActivity.class);
 
-            Bundle extras = getIntent().getExtras();
-
-            float neutral = extras.getFloat("neutral");
-            float happy = extras.getFloat("happy");
-            float sad = extras.getFloat("sad");
-            float surprise = extras.getFloat("surprise");
-            float fear = extras.getFloat("fear");
-            float disgust = extras.getFloat("disgust");
-            float anger = extras.getFloat("angry");
-
-            intent.putExtra("neutral", neutral);
-            intent.putExtra("happy", happy);
-            intent.putExtra("sad", sad);
-            intent.putExtra("surprise", surprise);
-            intent.putExtra("fear", fear);
-            intent.putExtra("disgust", disgust);
-            intent.putExtra("angry", anger);
+//            Bundle extras = getIntent().getExtras();
+//
+//            float neutral = extras.getFloat("neutral");
+//            float happy = extras.getFloat("happy");
+//            float sad = extras.getFloat("sad");
+//            float surprise = extras.getFloat("surprise");
+//            float fear = extras.getFloat("fear");
+//            float disgust = extras.getFloat("disgust");
+//            float anger = extras.getFloat("angry");
+//
+//            intent.putExtra("neutral", neutral);
+//            intent.putExtra("happy", happy);
+//            intent.putExtra("sad", sad);
+//            intent.putExtra("surprise", surprise);
+//            intent.putExtra("fear", fear);
+//            intent.putExtra("disgust", disgust);
+//            intent.putExtra("angry", anger);
 
             startActivity(intent);
         }
@@ -95,9 +101,9 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_preview);
         final ImageView imageView = findViewById(R.id.image);
-        final MessageView captureResolution = findViewById(R.id.nativeCaptureResolution);
-        final MessageView captureLatency = findViewById(R.id.captureLatency);
-        final MessageView exifRotation = findViewById(R.id.exifRotation);
+//        final MessageView captureResolution = findViewById(R.id.nativeCaptureResolution);
+//        final MessageView captureLatency = findViewById(R.id.captureLatency);
+//        final MessageView exifRotation = findViewById(R.id.exifRotation);
         PictureResult result = image == null ? null : image.get();
         if (result == null) {
             finish();
@@ -105,9 +111,9 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
         }
         final long delay = getIntent().getLongExtra("delay", 0);
         AspectRatio ratio = AspectRatio.of(result.getSize());
-        captureLatency.setTitleAndMessage("Approx. latency", delay + " milliseconds");
-        captureResolution.setTitleAndMessage("Resolution", result.getSize() + " (" + ratio + ")");
-        exifRotation.setTitleAndMessage("EXIF rotation", result.getRotation() + "");
+//        captureLatency.setTitleAndMessage("Approx. latency", delay + " milliseconds");
+//        captureResolution.setTitleAndMessage("Resolution", result.getSize() + " (" + ratio + ")");
+//        exifRotation.setTitleAndMessage("EXIF rotation", result.getRotation() + "");
         imageView.setImageBitmap(cropBmp);
 
         if (result.isSnapshot()) {

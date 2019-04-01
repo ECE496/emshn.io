@@ -77,7 +77,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     private MappedByteBuffer loadModelFile() throws IOException {
 
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model.tflite");
+        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("new_model.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffset = fileDescriptor.getStartOffset();
@@ -141,9 +141,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             for (int i = 0; i < 200; i++){
                 for (int j = 0; j < 200; j++){
                     int p = bmp.getPixel(j, i);
-                    img[0][i][j][0] = ((p >> 16) & 0xff) / (float)255;
-                    img[0][i][j][1] = ((p >> 8) & 0xff) / (float)255;
-                    img[0][i][j][2] = (p & 0xff) / (float)255;
+                    img[0][i][j][0] = ((p >> 16) & 0xff);
+                    img[0][i][j][1] = ((p >> 8) & 0xff);
+                    img[0][i][j][2] = (p & 0xff);
                 }
             }
             tflite.run(img, output);
@@ -237,28 +237,31 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             long callbackTime = System.currentTimeMillis();
             if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
             float[][] netOutput = doInference(result);
+
             PicturePreviewActivity.setPictureResult(result);
+            PicturePreviewActivity.setInferenceResult(netOutput);
+            ResultsActivity.setInferenceResult(netOutput);
 
 
             Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
 //        Intent intent = new Intent(CameraActivity.this, ResultsActivity.class);
             intent.putExtra("delay", callbackTime - mCaptureTime);
 
-            float neutral = netOutput[0][0];
-            float happy = netOutput[0][1];
-            float sad = netOutput[0][2];
-            float surprise = netOutput[0][3];
-            float fear = netOutput[0][4];
-            float disgust = netOutput[0][5];
-            float angry = netOutput[0][6];
-
-            intent.putExtra("neutral", neutral);
-            intent.putExtra("happy", happy);
-            intent.putExtra("sad", sad);
-            intent.putExtra("surprise", surprise);
-            intent.putExtra("fear", fear);
-            intent.putExtra("disgust", disgust);
-            intent.putExtra("angry", angry);
+//            float neutral = netOutput[0][0];
+//            float happy = netOutput[0][1];
+//            float sad = netOutput[0][2];
+//            float surprise = netOutput[0][3];
+//            float fear = netOutput[0][4];
+//            float disgust = netOutput[0][5];
+//            float angry = netOutput[0][6];
+//
+//            intent.putExtra("neutral", neutral);
+//            intent.putExtra("happy", happy);
+//            intent.putExtra("sad", sad);
+//            intent.putExtra("surprise", surprise);
+//            intent.putExtra("fear", fear);
+//            intent.putExtra("disgust", disgust);
+//            intent.putExtra("angry", angry);
 
             startActivity(intent);
             mCaptureTime = 0;
@@ -314,7 +317,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private void capturePictureSnapshot() {
         if (camera.isTakingPicture()) return;
         mCaptureTime = System.currentTimeMillis();
-        message("Capturing picture snapshot...", false);
+//        message("Capturing picture snapshot...", false);
         camera.takePictureSnapshot();
     }
 
@@ -409,20 +412,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     /* While interrupt not received ... */
                     while (!this.isInterrupted()) {
 
-                        try {
-
-                            /* Sleep time to yield to other threads? */
-                            Thread.sleep(200);
-
-                        } catch (InterruptedException ignored) {
-
-                            /* In case interrupt arrives when asleep */
-                            break;
-
-                        }
-
                         /* Get a picture, and do inference on it*/
-                        capturePicture();
+                        capturePictureSnapshot();
                         if (pictureStreamResult != null) pictureStreamOutput = doInference(pictureStreamResult);
 
                         /* Put "real-time" results into UI */

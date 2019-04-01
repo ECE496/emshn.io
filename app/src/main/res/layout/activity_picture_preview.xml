@@ -27,20 +27,20 @@
             android:adjustViewBounds="true"
             tools:onClick="onClick" />
 
-        <com.example.emshnio.MessageView
-            android:id="@+id/nativeCaptureResolution"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!--<com.example.emshnio.MessageView-->
+            <!--android:id="@+id/nativeCaptureResolution"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
 
-        <com.example.emshnio.MessageView
-            android:id="@+id/captureLatency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!--<com.example.emshnio.MessageView-->
+            <!--android:id="@+id/captureLatency"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
 
-        <com.example.emshnio.MessageView
-            android:id="@+id/exifRotation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!--<com.example.emshnio.MessageView-->
+            <!--android:id="@+id/exifRotation"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
 
 
         <ImageButton

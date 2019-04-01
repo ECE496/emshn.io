@@ -14,14 +14,22 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class ResultsActivity extends AppCompatActivity {
+
+    private static WeakReference<float[][]> inferenceResult;
+
+    public static void setInferenceResult(@Nullable float[][] netOutput) {
+        inferenceResult = netOutput != null ? new WeakReference<>(netOutput) : null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +49,22 @@ public class ResultsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        assert extras != null;
-        float neutral = extras.getFloat("neutral");
-        float happy = extras.getFloat("happy");
-        float sad = extras.getFloat("sad");
-        float surprise = extras.getFloat("surprise");
-        float fear = extras.getFloat("fear");
-        float disgust = extras.getFloat("disgust");
-        float anger = extras.getFloat("angry");
+//        assert extras != null;
+//        float neutral = extras.getFloat("neutral");
+//        float happy = extras.getFloat("happy");
+//        float sad = extras.getFloat("sad");
+//        float surprise = extras.getFloat("surprise");
+//        float fear = extras.getFloat("fear");
+//        float disgust = extras.getFloat("disgust");
+//        float anger = extras.getFloat("angry");
+//
+        float neutral = inferenceResult.get()[0][0];
+        float happy = inferenceResult.get()[0][1];
+        float sad = inferenceResult.get()[0][2];
+        float surprise = inferenceResult.get()[0][3];
+        float fear = inferenceResult.get()[0][4];
+        float disgust = inferenceResult.get()[0][5];
+        float anger = inferenceResult.get()[0][6];
 
         float values[] = new float[]{neutral, happy, sad, surprise, fear, disgust, anger};
         final String[] emotions = new String[]{"Neutral", "Happy", "Sad", "Surprise","Fear","Disgust","Anger"};
