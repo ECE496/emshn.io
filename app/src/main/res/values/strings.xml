@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Emshn.io</string>
+    <string name="title_activity_help">HelpActivity</string>
 </resources>
