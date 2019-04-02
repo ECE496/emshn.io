@@ -74,7 +74,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
             }
         });
 
-        findViewById(R.id.edit).setOnClickListener(this);
+//        findViewById(R.id.edit).setOnClickListener(this);
         findViewById(R.id.capturePicture).setOnClickListener(this);
 //        findViewById(R.id.capturePictureSnapshot).setOnClickListener(this);
 //        findViewById(R.id.captureVideo).setOnClickListener(this);
@@ -110,7 +110,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
 
     private void message(String content, boolean important) {
         int length = important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
-        Toast.makeText(this, content, length).show();
+//        Toast.makeText(this, content, length).show();
     }
 
     private void onOpened(CameraOptions options) {
@@ -162,7 +162,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.edit: edit(); break;
+//            case R.id.edit: edit(); break;
             case R.id.capturePicture: capturePictureSnapshot(); break;
 //            case R.id.capturePictureSnapshot: capturePictureSnapshot(); break;
 //            case R.id.captureVideo: backgroundTask(); break;
