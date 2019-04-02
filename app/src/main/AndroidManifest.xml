@@ -11,12 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StreamCaptureActivity"></activity>
+        <activity android:name=".StreamCaptureActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MenuActivity">
+        <activity android:name=".MenuActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +30,10 @@
             android:configChanges="orientation|screenLayout|keyboardHidden"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
-        <activity android:name=".PicturePreviewActivity" />
+        <activity
+            android:name=".PicturePreviewActivity"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".ResultsActivity" />
     </application>
 
