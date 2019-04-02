@@ -6,7 +6,7 @@
     android:background="#FF444444"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SingleCaptureActivity">>
+    tools:context=".StreamCaptureActivity">>
 
     <!-- Camera -->
     <com.otaliastudios.cameraview.CameraView
@@ -45,6 +45,58 @@
     <!-- Controls -->
 
     <LinearLayout
+        android:id="@+id/testVal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/neutral"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+
+        <TextView
+            android:id="@+id/happy"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/sad"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/surprise"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/fear"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/disgust"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/anger"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="TextView" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -77,11 +129,11 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/capturePicture"
+            android:id="@+id/captureVideo"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_photo" />
+            app:srcCompat="@drawable/ic_video" />
 
         <Space
             android:layout_width="0dp"

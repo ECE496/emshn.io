@@ -38,7 +38,7 @@ import java.nio.channels.FileChannel;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SingleCaptureActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
+public class StreamCaptureActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
 
     private CameraView camera;
     private ViewGroup controlPanel;
@@ -47,12 +47,12 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
     private long mCaptureTime;
 
     /* Threading vars */
-//    View editText;
-//    Thread imgStreamThread;
-//    float[][] pictureStreamOutput;
-//    PictureResult pictureStreamResult;
-//
-//    boolean onStream;
+    View editText;
+    Thread imgStreamThread;
+    float[][] pictureStreamOutput;
+    PictureResult pictureStreamResult;
+
+    boolean onStream;
 
     Inference predictor;
 
@@ -60,7 +60,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_capture);
+        setContentView(R.layout.activity_stream_capture);
         CameraLogger.setLogLevel(CameraLogger.LEVEL_VERBOSE);
 
         camera = findViewById(R.id.camera);
@@ -68,16 +68,16 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
         camera.addCameraListener(new CameraListener() {
             public void onCameraOpened(@NonNull CameraOptions options) { onOpened(options); }
             public void onPictureTaken(@NonNull PictureResult result) { onPicture(result); }
-//            public void onVideoTaken(@NonNull VideoResult result) { onVideo(result); }
+            //            public void onVideoTaken(@NonNull VideoResult result) { onVideo(result); }
             public void onCameraError(@NonNull CameraException exception) {
                 onError(exception);
             }
         });
 
         findViewById(R.id.edit).setOnClickListener(this);
-        findViewById(R.id.capturePicture).setOnClickListener(this);
+//        findViewById(R.id.capturePicture).setOnClickListener(this);
 //        findViewById(R.id.capturePictureSnapshot).setOnClickListener(this);
-//        findViewById(R.id.captureVideo).setOnClickListener(this);
+        findViewById(R.id.captureVideo).setOnClickListener(this);
 //        findViewById(R.id.captureVideoSnapshot).setOnClickListener(this);
         findViewById(R.id.toggleCamera).setOnClickListener(this);
 
@@ -99,10 +99,10 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
         });
 
 
-//        editText = findViewById(R.id.testVal);
-//        editText.setVisibility(View.INVISIBLE);
-//
-//        onStream = false;
+        editText = findViewById(R.id.testVal);
+        editText.setVisibility(View.INVISIBLE);
+
+        onStream = false;
 
         predictor = new Inference(this);
 
@@ -127,29 +127,29 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
 
     private void onPicture(PictureResult result) {
 
-//        if (onStream) pictureStreamResult = result;
+        if (onStream) pictureStreamResult = result;
 
 //        else {
-
-            if (camera.isTakingVideo()) {
-                message("Captured while taking video. Size=" + result.getSize(), false);
-                return;
-            }
-
-            // This can happen if picture was taken with a gesture.
-            long callbackTime = System.currentTimeMillis();
-            if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
-            float[][] netOutput = predictor.doInference(result);
-
-            PicturePreviewActivity.setPictureResult(result);
-            PicturePreviewActivity.setInferenceResult(netOutput);
-            ResultsActivity.setInferenceResult(netOutput);
-
-            Intent intent = new Intent(SingleCaptureActivity.this, PicturePreviewActivity.class);
-            intent.putExtra("delay", callbackTime - mCaptureTime);
-
-            startActivity(intent);
-            mCaptureTime = 0;
+//
+//            if (camera.isTakingVideo()) {
+//                message("Captured while taking video. Size=" + result.getSize(), false);
+//                return;
+//            }
+//
+//            // This can happen if picture was taken with a gesture.
+//            long callbackTime = System.currentTimeMillis();
+//            if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
+//            float[][] netOutput = predictor.doInference(result);
+//
+//            PicturePreviewActivity.setPictureResult(result);
+//            PicturePreviewActivity.setInferenceResult(netOutput);
+//            ResultsActivity.setInferenceResult(netOutput);
+//
+//            Intent intent = new Intent(StreamCaptureActivity.this, PicturePreviewActivity.class);
+//            intent.putExtra("delay", callbackTime - mCaptureTime);
+//
+//            startActivity(intent);
+//            mCaptureTime = 0;
 //        }
     }
 
@@ -163,9 +163,9 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.edit: edit(); break;
-            case R.id.capturePicture: capturePictureSnapshot(); break;
+//            case R.id.capturePicture: capturePictureSnapshot(); break;
 //            case R.id.capturePictureSnapshot: capturePictureSnapshot(); break;
-//            case R.id.captureVideo: backgroundTask(); break;
+            case R.id.captureVideo: backgroundTask(); break;
 //            case R.id.captureVideoSnapshot: captureVideoSnapshot(); break;
             case R.id.toggleCamera: toggleCamera(); break;
         }
@@ -179,6 +179,9 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
             b.setState(BottomSheetBehavior.STATE_HIDDEN);
             return;
         }
+
+        imgStreamThread.interrupt();
+
         super.onBackPressed();
     }
 
@@ -187,17 +190,17 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
         b.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
-//    private void capturePicture() {
-//        if (camera.getMode() == Mode.VIDEO) {
-//            message("Can't take HQ pictures while in VIDEO mode.", false);
-//            return;
-//        }
-//        if (camera.isTakingPicture()) return;
-//
-//        mCaptureTime = System.currentTimeMillis();
-////        message("Capturing picture...", false);
-//        camera.takePicture();
-//    }
+    private void capturePicture() {
+        if (camera.getMode() == Mode.VIDEO) {
+            message("Can't take HQ pictures while in VIDEO mode.", false);
+            return;
+        }
+        if (camera.isTakingPicture()) return;
+
+        mCaptureTime = System.currentTimeMillis();
+//        message("Capturing picture...", false);
+        camera.takePicture();
+    }
 
     private void capturePictureSnapshot() {
         if (camera.isTakingPicture()) return;
@@ -206,24 +209,24 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
         camera.takePictureSnapshot();
     }
 
-//    private void captureVideo() {
-//        if (camera.getMode() == Mode.PICTURE) {
-//            message("Can't record HQ videos while in PICTURE mode.", false);
-//            return;
-//        }
-//        if (camera.isTakingPicture() || camera.isTakingVideo()) return;
-//        message("Recording for 5 seconds...", true);
-//        camera.takeVideo(new File(getFilesDir(), "video.mp4"), 5000);
-//    }
+    private void captureVideo() {
+        if (camera.getMode() == Mode.PICTURE) {
+            message("Can't record HQ videos while in PICTURE mode.", false);
+            return;
+        }
+        if (camera.isTakingPicture() || camera.isTakingVideo()) return;
+        message("Recording for 5 seconds...", true);
+        camera.takeVideo(new File(getFilesDir(), "video.mp4"), 5000);
+    }
 
-//    private void captureVideoSnapshot() {
-//        if (camera.isTakingVideo()) {
-//            message("Already taking video.", false);
-//            return;
-//        }
-//        message("Recording snapshot for 5 seconds...", true);
-//        camera.takeVideoSnapshot(new File(getFilesDir(), "video.mp4"), 5000);
-//    }
+    private void captureVideoSnapshot() {
+        if (camera.isTakingVideo()) {
+            message("Already taking video.", false);
+            return;
+        }
+        message("Recording snapshot for 5 seconds...", true);
+        camera.takeVideoSnapshot(new File(getFilesDir(), "video.mp4"), 5000);
+    }
 
     private void toggleCamera() {
         if (camera.isTakingPicture() || camera.isTakingVideo()) return;
@@ -272,74 +275,74 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
     //endregion
 
     /* Image stream background task*/
-//    private void backgroundTask() {
-//
-//        if (editText.getVisibility() == View.VISIBLE) {
-//
-//            /* Turning off image stream */
-//            editText.setVisibility(View.INVISIBLE);
-//            onStream = false;
-//            imgStreamThread.interrupt();
-//
-//        } else if (editText.getVisibility() == View.INVISIBLE) {
-//
-//            /* Turning on image stream */
-//            editText.setVisibility(View.VISIBLE);
-//
-//            /* Background thread --> */
-//            imgStreamThread = new Thread("PictureStream") {
-//                private int count = 0;
-//
-//                @Override
-//                public void run() {
-//
-//                    count = 0;
-//                    /* While interrupt not received ... */
-//                    while (!this.isInterrupted()) {
-//
-//                        /* Get a picture, and do inference on it*/
-//                        capturePictureSnapshot();
-//                        if (pictureStreamResult != null) pictureStreamOutput = predictor.doInference(pictureStreamResult);
-//
-//                        /* Put "real-time" results into UI */
-//                        runOnUiThread(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//
-//                                if (pictureStreamOutput != null) {
-//
-//                                    TextView neutral = findViewById(R.id.neutral);
-//                                    TextView happy = findViewById(R.id.happy);
-//                                    TextView sad = findViewById(R.id.sad);
-//                                    TextView surprise = findViewById(R.id.surprise);
-//                                    TextView fear = findViewById(R.id.fear);
-//                                    TextView disgust = findViewById(R.id.disgust);
-//                                    TextView anger = findViewById(R.id.anger);
-//
-//
-//                                    neutral.setText(Float.toString(pictureStreamOutput[0][0]));
-//                                    happy.setText(Float.toString(pictureStreamOutput[0][1]));
-//                                    sad.setText(Float.toString(pictureStreamOutput[0][2]));
-//                                    surprise.setText(Float.toString(pictureStreamOutput[0][3]));
-//                                    fear.setText(Float.toString(pictureStreamOutput[0][4]));
-//                                    disgust.setText(Float.toString(pictureStreamOutput[0][5]));
-//                                    anger.setText(Float.toString(pictureStreamOutput[0][6]));
-//
-//                                }
-//                            }
-//                        });
-//
-//                    }
-//
-//                }
-//            };
-//
-//            /* Turn on image stream */
-//            onStream = true;
-//            imgStreamThread.start();
-//        }
-//    }
+    private void backgroundTask() {
+
+        if (editText.getVisibility() == View.VISIBLE) {
+
+            /* Turning off image stream */
+            editText.setVisibility(View.INVISIBLE);
+            onStream = false;
+            imgStreamThread.interrupt();
+
+        } else if (editText.getVisibility() == View.INVISIBLE) {
+
+            /* Turning on image stream */
+            editText.setVisibility(View.VISIBLE);
+
+            /* Background thread --> */
+            imgStreamThread = new Thread("PictureStream") {
+                private int count = 0;
+
+                @Override
+                public void run() {
+
+                    count = 0;
+                    /* While interrupt not received ... */
+                    while (!this.isInterrupted()) {
+
+                        /* Get a picture, and do inference on it*/
+                        capturePictureSnapshot();
+                        if (pictureStreamResult != null) pictureStreamOutput = predictor.doInference(pictureStreamResult);
+
+                        /* Put "real-time" results into UI */
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                if (pictureStreamOutput != null) {
+
+                                    TextView neutral = findViewById(R.id.neutral);
+                                    TextView happy = findViewById(R.id.happy);
+                                    TextView sad = findViewById(R.id.sad);
+                                    TextView surprise = findViewById(R.id.surprise);
+                                    TextView fear = findViewById(R.id.fear);
+                                    TextView disgust = findViewById(R.id.disgust);
+                                    TextView anger = findViewById(R.id.anger);
+
+
+                                    neutral.setText(Float.toString(pictureStreamOutput[0][0]));
+                                    happy.setText(Float.toString(pictureStreamOutput[0][1]));
+                                    sad.setText(Float.toString(pictureStreamOutput[0][2]));
+                                    surprise.setText(Float.toString(pictureStreamOutput[0][3]));
+                                    fear.setText(Float.toString(pictureStreamOutput[0][4]));
+                                    disgust.setText(Float.toString(pictureStreamOutput[0][5]));
+                                    anger.setText(Float.toString(pictureStreamOutput[0][6]));
+
+                                }
+                            }
+                        });
+
+                    }
+
+                }
+            };
+
+            /* Turn on image stream */
+            onStream = true;
+            imgStreamThread.start();
+        }
+    }
 
 
 }
