@@ -1,6 +1,7 @@
 package com.example.emshnio;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,18 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerView;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.RadarData;
+import com.github.mikephil.charting.data.RadarDataSet;
+import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
@@ -18,6 +31,7 @@ import com.otaliastudios.cameraview.Mode;
 import com.otaliastudios.cameraview.PictureResult;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -44,9 +58,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
     Inference predictor;
 
-    public static int[] argsort( float[] a) {
-        return argsort(a, true);
-    }
+    private boolean displayMode;
 
     public static int[] argsort(final float[] a, final boolean ascending) {
         Integer[] indexes = new Integer[a.length];
@@ -91,6 +103,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
         findViewById(R.id.captureVideo).setOnClickListener(this);
 //        findViewById(R.id.captureVideoSnapshot).setOnClickListener(this);
         findViewById(R.id.toggleCamera).setOnClickListener(this);
+        findViewById(R.id.modeToggle).setOnClickListener(this);
 
         controlPanel = findViewById(R.id.controls);
         ViewGroup group = (ViewGroup) controlPanel.getChildAt(0);
@@ -113,9 +126,13 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
         editText = findViewById(R.id.testVal);
         editText.setVisibility(View.INVISIBLE);
 
+        View radar = findViewById(R.id.radarchart);
+        radar.setVisibility(View.INVISIBLE);
+
         onStream = false;
 
         predictor = new Inference(this);
+        displayMode = false; /* Start on emoji mode ?*/
 
     }
 
@@ -157,7 +174,162 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             case R.id.captureVideo: backgroundTask(); break;
 //            case R.id.captureVideoSnapshot: captureVideoSnapshot(); break;
             case R.id.toggleCamera: toggleCamera(); break;
+            case R.id.modeToggle: switchDisplayMode(); break;
         }
+    }
+
+    private void switchDisplayMode() {
+
+        View radar = findViewById(R.id.radarchart);
+
+        if (radar.getVisibility() == View.VISIBLE) {
+
+            /* Turning off image stream */
+            radar.setVisibility(View.INVISIBLE);
+            displayMode = false;
+
+        } else if (radar.getVisibility() == View.INVISIBLE) {
+
+            /* Turning on image stream */
+            radar.setVisibility(View.VISIBLE);
+            displayMode = true;
+
+
+            RadarChart chart = (RadarChart) radar;
+            chart.setBackgroundColor(Color.argb(0x00, 0x00, 0x85, 0x77));
+
+            chart.getDescription().setEnabled(false);
+
+            chart.setWebLineWidth(1f);
+            chart.setWebColor(Color.LTGRAY);
+            chart.setWebLineWidthInner(1f);
+            chart.setWebColorInner(Color.LTGRAY);
+            chart.setWebAlpha(50);
+
+            MarkerView mv = new RadarMarkerView(this, R.layout.radar_markerview);
+            mv.setChartView(chart); // For bounds control
+            chart.setMarker(mv); // Set the marker to the chart
+
+            setData(null);
+
+            chart.animateXY(400, 400, Easing.EaseInOutQuad);
+
+            XAxis xAxis = chart.getXAxis();
+//            xAxis.setTypeface(tfLight);
+            xAxis.setTextSize(9f);
+            xAxis.setYOffset(0f);
+            xAxis.setXOffset(0f);
+            xAxis.setValueFormatter(new MyXAxisValueFormatter());
+            xAxis.setTextColor(Color.WHITE);
+
+            YAxis yAxis = chart.getYAxis();
+//            yAxis.setTypeface(tfLight);
+            yAxis.setLabelCount(5, false);
+            yAxis.setTextSize(9f);
+            yAxis.setAxisMinimum(0f);
+            yAxis.setAxisMaximum(00f);
+            yAxis.setDrawLabels(false);
+
+            Legend l = chart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+//            l.setTypeface(tfLight);
+            l.setXEntrySpace(7f);
+            l.setYEntrySpace(5f);
+            l.setTextColor(Color.WHITE);
+
+        }
+
+    }
+
+    class MyXAxisValueFormatter implements IAxisValueFormatter {
+
+
+        private final String[] mActivities = new String[]{"Neutral", "Happy", "Sad", "Surprise", "Fear", "Disgust", "Anger"};
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return mActivities[(int) value % mActivities.length];
+        }
+    }
+
+    private void setData(float[] emoData) {
+
+        boolean nullInp = (emoData == null);
+        ArrayList<RadarEntry> entries1 = new ArrayList<>();
+
+        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+        // the chart.
+        for (int i = 0; i < 7; i++) {
+            if (nullInp) entries1.add(new RadarEntry(0f));
+            else entries1.add(new RadarEntry(emoData[i] *100f));
+        }
+
+        RadarDataSet set1 = new RadarDataSet(entries1, "Emotion Distribution");
+//        set1.setColor(Color.rgb(121, 162, 175));
+//        set1.setFillColor(Color.rgb(121, 162, 175));
+        set1.setColor(Color.rgb(0xD8, 0x1B, 0x60));
+        set1.setFillColor(Color.rgb(0xD8, 0x1B, 0x60));
+        set1.setDrawFilled(true);
+        set1.setFillAlpha(180);
+        set1.setLineWidth(2f);
+        set1.setDrawHighlightCircleEnabled(true);
+        set1.setDrawHighlightIndicators(false);
+
+
+        ArrayList<IRadarDataSet> sets = new ArrayList<>();
+        sets.add(set1);
+
+        RadarData data = new RadarData(sets);
+//        data.setValueTypeface(tfLight);
+        data.setValueTextSize(8f);
+        data.setDrawValues(false);
+        data.setValueTextColor(Color.WHITE);
+
+        RadarChart chart = findViewById(R.id.radarchart);
+        chart.setData(data);
+        chart.invalidate();
+    }
+
+    private void updateData(float[] emoData) {
+
+        RadarChart chart = findViewById(R.id.radarchart);
+        chart.clearValues();
+        chart.invalidate();
+        chart.clear();
+        setData(emoData);
+//        ArrayList<RadarEntry> entries1 = new ArrayList<>();
+//
+//        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+//        // the chart.
+//        for (int i = 0; i < 7; i++) {
+//            entries1.add(new RadarEntry(emoData[i] *100f));
+//        }
+//
+//        RadarDataSet set1 = new RadarDataSet(entries1, "Emotion Distribution");
+//        set1.setColor(Color.rgb(121, 162, 175));
+//        set1.setFillColor(Color.rgb(121, 162, 175));
+//        set1.setDrawFilled(true);
+//        set1.setFillAlpha(180);
+//        set1.setLineWidth(2f);
+//        set1.setDrawHighlightCircleEnabled(true);
+//        set1.setDrawHighlightIndicators(false);
+//
+//
+//        ArrayList<IRadarDataSet> sets = new ArrayList<>();
+//        sets.add(set1);
+//
+//        RadarData data = new RadarData(sets);
+////        data.setValueTypeface(tfLight);
+//        data.setValueTextSize(8f);
+//        data.setDrawValues(false);
+//        data.setValueTextColor(Color.WHITE);
+//
+//
+//        chart.setData(data);
+//        chart.invalidate();
     }
 
 
@@ -168,8 +340,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             b.setState(BottomSheetBehavior.STATE_HIDDEN);
             return;
         }
-
-        imgStreamThread.interrupt();
+        if (imgStreamThread != null) imgStreamThread.interrupt();
 
         super.onBackPressed();
     }
@@ -266,22 +437,26 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
     /* Image stream background task*/
     private void backgroundTask() {
 
-        if (editText.getVisibility() == View.VISIBLE) {
+//        if (editText.getVisibility() == View.VISIBLE) {
+        if (onStream) {
 
             /* Turning off image stream */
             editText.setVisibility(View.INVISIBLE);
             onStream = false;
             imgStreamThread.interrupt();
 
-        } else if (editText.getVisibility() == View.INVISIBLE) {
+//        } else if (editText.getVisibility() == View.INVISIBLE) {
+        } else {
 
             /* Turning on image stream */
-            editText.setVisibility(View.VISIBLE);
+            if (!displayMode) editText.setVisibility(View.VISIBLE);
 
             /* Background thread --> */
             imgStreamThread = new Thread("PictureStream") {
                 private int count = 0;
                 private int[] emoArgs;
+
+                private boolean mode = displayMode; /* Mode can't change during operation */
 
                 @Override
                 public void run() {
@@ -307,13 +482,45 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
                                 if (pictureStreamOutput != null) {
 
-                                    TextView first = findViewById(R.id.first);
-                                    TextView second = findViewById(R.id.second);
-                                    TextView third = findViewById(R.id.third);
+                                    if (mode) {
 
-                                    first.setText(emojiMap[emoArgs[0]]);
-                                    second.setText(emojiMap[emoArgs[1]]);
-                                    third.setText(emojiMap[emoArgs[2]]);
+                                        RadarChart chart = findViewById(R.id.radarchart);
+
+                                        /* set graph data */
+                                        updateData(pictureStreamOutput[0]);
+
+                                        chart.animateXY(200, 200, Easing.EaseInOutQuad);
+
+                                        XAxis xAxis = chart.getXAxis();
+//            xAxis.setTypeface(tfLight);
+                                        xAxis.setTextSize(9f);
+                                        xAxis.setYOffset(0f);
+                                        xAxis.setXOffset(0f);
+                                        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+                                        xAxis.setTextColor(Color.WHITE);
+
+                                        YAxis yAxis = chart.getYAxis();
+//            yAxis.setTypeface(tfLight);
+                                        yAxis.setLabelCount(5, false);
+                                        yAxis.setTextSize(9f);
+                                        yAxis.setAxisMinimum(0f);
+                                        yAxis.setAxisMaximum(80f);
+                                        yAxis.setDrawLabels(false);
+
+                                        Legend l = chart.getLegend();
+                                        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+                                        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+                                        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+                                        l.setDrawInside(false);
+//            l.setTypeface(tfLight);
+                                        l.setXEntrySpace(7f);
+                                        l.setYEntrySpace(5f);
+                                        l.setTextColor(Color.WHITE);
+
+
+                                    } else {
+                                        setEmoji(emoArgs);
+                                    }
 
                                 }
                             }
@@ -330,5 +537,25 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+
+    private void setEmoji(int[] emoArgs) {
+        TextView first = findViewById(R.id.first);
+        TextView second = findViewById(R.id.second);
+        TextView third = findViewById(R.id.third);
+
+        first.setText(emojiMap[emoArgs[0]]);
+        second.setText(emojiMap[emoArgs[1]]);
+        third.setText(emojiMap[emoArgs[2]]);
+    }
+
+    private void launchGraph(int[] emoArgs) {
+        TextView first = findViewById(R.id.first);
+        TextView second = findViewById(R.id.second);
+        TextView third = findViewById(R.id.third);
+
+        first.setText(emojiMap[emoArgs[0]]);
+        second.setText(emojiMap[emoArgs[1]]);
+        third.setText(emojiMap[emoArgs[2]]);
+    }
 
 }
