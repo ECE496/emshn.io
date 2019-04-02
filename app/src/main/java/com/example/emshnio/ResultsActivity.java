@@ -155,7 +155,7 @@ public class ResultsActivity extends AppCompatActivity {
         l.setDrawInside(true);
 //        l.setTypeface(tfLight);
         l.setYOffset(20f);
-        l.setXOffset(20f);
+//        l.setXOffset(20f);
         l.setYEntrySpace(0f);
         l.setTextSize(8f);
         barChart.animateXY(1500,1500);
