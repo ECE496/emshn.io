@@ -31,14 +31,14 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
     private void goToStreamCapture() {
 
-        Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
+        Intent intent = new Intent(MenuActivity.this, SingleCaptureActivity.class);
         startActivity(intent);
 
     }
 
     private void goToSingleCapture() {
 
-        Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
+        Intent intent = new Intent(MenuActivity.this, SingleCaptureActivity.class);
         startActivity(intent);
 
     }

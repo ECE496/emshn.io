@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
+            android:name=".SingleCaptureActivity"
             android:configChanges="orientation|screenLayout|keyboardHidden"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"></activity>

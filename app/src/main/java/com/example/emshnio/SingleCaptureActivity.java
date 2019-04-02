@@ -1,6 +1,5 @@
 package com.example.emshnio;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -11,14 +10,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.media.FaceDetector;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -38,7 +31,6 @@ import org.tensorflow.lite.Interpreter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -46,7 +38,7 @@ import java.nio.channels.FileChannel;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CameraActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
+public class SingleCaptureActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
 
     private CameraView camera;
     private ViewGroup controlPanel;
@@ -243,8 +235,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             ResultsActivity.setInferenceResult(netOutput);
 
 
-            Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
-//        Intent intent = new Intent(CameraActivity.this, ResultsActivity.class);
+            Intent intent = new Intent(SingleCaptureActivity.this, PicturePreviewActivity.class);
+//        Intent intent = new Intent(SingleCaptureActivity.this, ResultsActivity.class);
             intent.putExtra("delay", callbackTime - mCaptureTime);
 
 //            float neutral = netOutput[0][0];
@@ -270,7 +262,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
 //    private void onVideo(VideoResult video) {
 //        VideoPreviewActivity.setVideoResult(video);
-//        Intent intent = new Intent(CameraActivity.this, VideoPreviewActivity.class);
+//        Intent intent = new Intent(SingleCaptureActivity.this, VideoPreviewActivity.class);
 //        startActivity(intent);
 //    }
 
