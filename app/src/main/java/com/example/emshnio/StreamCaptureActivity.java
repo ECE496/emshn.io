@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -438,12 +439,15 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
     private void backgroundTask() {
 
 //        if (editText.getVisibility() == View.VISIBLE) {
+
         if (onStream) {
 
             /* Turning off image stream */
             editText.setVisibility(View.INVISIBLE);
             onStream = false;
             imgStreamThread.interrupt();
+            ImageButton imageButton = (ImageButton)(findViewById(R.id.captureVideo));
+            imageButton.setImageResource(R.drawable.ic_video);
 
 //        } else if (editText.getVisibility() == View.INVISIBLE) {
         } else {
@@ -460,7 +464,8 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
                 @Override
                 public void run() {
-
+                    ImageButton imageButton = (ImageButton)(findViewById(R.id.captureVideo));
+                    imageButton.setImageResource(R.drawable.ic_video_record);
                     count = 0;
                     /* While interrupt not received ... */
                     while (!this.isInterrupted()) {
