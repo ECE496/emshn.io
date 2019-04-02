@@ -197,7 +197,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
 
             RadarChart chart = (RadarChart) radar;
-            chart.setBackgroundColor(Color.argb(0x00, 0x00, 0x85, 0x77));
+            chart.setBackgroundColor(Color.argb(0x40, 0x00, 0x85, 0x77));
 
             chart.getDescription().setEnabled(false);
 
@@ -232,14 +232,15 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             yAxis.setDrawLabels(false);
 
             Legend l = chart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-            l.setDrawInside(false);
-//            l.setTypeface(tfLight);
-            l.setXEntrySpace(7f);
-            l.setYEntrySpace(5f);
-            l.setTextColor(Color.WHITE);
+            l.setEnabled(false);
+//            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+//            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+//            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+//            l.setDrawInside(true);
+////            l.setTypeface(tfLight);
+//            l.setXEntrySpace(7f);
+//            l.setYEntrySpace(5f);
+//            l.setTextColor(Color.WHITE);
 
         }
 

@@ -80,16 +80,15 @@
 
         <com.github.mikephil.charting.charts.RadarChart
             android:id="@+id/radarchart"
-            android:layout_width="223dp"
-            android:layout_height="222dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_marginEnd="8dp"
+            android:background="#33008577"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.789"
-            android:background="#33008577"
-            />
+            app:layout_constraintVertical_bias="0.789" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
