@@ -98,30 +98,74 @@ public class ResultsActivity extends AppCompatActivity {
 //        entries.add(new BarEntry(1f, maxValue2));
 //        entries.add(new BarEntry(2f, maxValue3));
 
-        entries.add(new BarEntry(0f, neutral));
-        entries.add(new BarEntry(1f, happy));
-        entries.add(new BarEntry(2f, sad));
-        entries.add(new BarEntry(3f, surprise));
-        entries.add(new BarEntry(4f, fear));
-        entries.add(new BarEntry(5f, disgust));
-        entries.add(new BarEntry(6f, anger));
+        ArrayList<BarEntry> neutralValue = new ArrayList<>();
+        ArrayList<BarEntry> happyValue = new ArrayList<>();
+        ArrayList<BarEntry> sadValue = new ArrayList<>();
+        ArrayList<BarEntry> surpriseValue = new ArrayList<>();
+        ArrayList<BarEntry> fearValue = new ArrayList<>();
+        ArrayList<BarEntry> disgustValue = new ArrayList<>();
+        ArrayList<BarEntry> angerValue = new ArrayList<>();
 
-        BarDataSet set = new BarDataSet(entries, "Emotion Distribution");
+//        entries.add(new BarEntry(0f, neutral));
+//        entries.add(new BarEntry(1f, happy));
+//        entries.add(new BarEntry(2f, sad));
+//        entries.add(new BarEntry(3f, surprise));
+//        entries.add(new BarEntry(4f, fear));
+//        entries.add(new BarEntry(5f, disgust));
+//        entries.add(new BarEntry(6f, anger));
+        neutralValue.add(new BarEntry(0f, neutral));
+        happyValue.add(new BarEntry(1f, happy));
+        sadValue.add(new BarEntry(2f, sad));
+        surpriseValue.add(new BarEntry(3f, surprise));
+        fearValue.add(new BarEntry(4f, fear));
+        disgustValue.add(new BarEntry(5f, disgust));
+        angerValue.add(new BarEntry(6f, anger));
+
+//        BarDataSet set = new BarDataSet(entries, "Emotion Distribution");
+
+        BarDataSet neutralSet = new BarDataSet(neutralValue, "Neutral");
+        BarDataSet happySet = new BarDataSet(happyValue, "Happy");
+        BarDataSet sadSet = new BarDataSet(sadValue, "Sad");
+        BarDataSet surpriseSet = new BarDataSet(surpriseValue, "Surprise");
+        BarDataSet fearSet = new BarDataSet(fearValue, "Fear");
+        BarDataSet disgustSet = new BarDataSet(disgustValue, "Disgust");
+        BarDataSet angerSet = new BarDataSet(angerValue, "Anger");
+
+        neutralSet.setColors(ColorTemplate.JOYFUL_COLORS[0]);
+        happySet.setColors(ColorTemplate.JOYFUL_COLORS[1]);
+        sadSet.setColors(ColorTemplate.JOYFUL_COLORS[2]);
+        surpriseSet.setColors(ColorTemplate.JOYFUL_COLORS[3]);
+        fearSet.setColors(ColorTemplate.JOYFUL_COLORS[4]);
+        disgustSet.setColors(ColorTemplate.COLORFUL_COLORS[0]);
+        angerSet.setColors(ColorTemplate.COLORFUL_COLORS[1]);
+
         //set.setColors(new int[] {Color.GRAY, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.MAGENTA, Color.DKGRAY});
-        BarData data = new BarData(set);
+        BarData data = new BarData(neutralSet, happySet, sadSet, surpriseSet, fearSet, disgustSet, angerSet);
         data.setBarWidth(0.9f); // set custom bar width
 //        data.setValueTextSize(17f);
         barChart.setData(data);
         barChart.setFitBars(true); // make the x-axis fit exactly all bars
         barChart.setDrawValueAboveBar(true);
-        set.setColors(ColorTemplate.JOYFUL_COLORS);
+//        set.setColors(ColorTemplate.JOYFUL_COLORS);
+        Legend l = barChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDirection(Legend.LegendDirection.LEFT_TO_RIGHT);
+        l.setDrawInside(true);
+//        l.setTypeface(tfLight);
+        l.setYOffset(20f);
+        l.setXOffset(20f);
+        l.setYEntrySpace(0f);
+        l.setTextSize(8f);
         barChart.animateXY(1500,1500);
-        barChart.invalidate(); // refresh
+//        barChart.invalidate(); // refresh
 
-        Legend legend = barChart.getLegend();
+
+//        Legend legend = barChart.getLegend();
 //        legend.setEnabled(false);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+//        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+//        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
 //        legend.set
         // the labels that should be drawn on the XAxis
         //final String[] quarters = new String[] { "Neutral", "Happy", "Sad", "Surprise","Fear","Disgust","Anger" };
@@ -130,13 +174,20 @@ public class ResultsActivity extends AppCompatActivity {
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new MyXAxisValueFormatter(quarters));
         xAxis.setGranularity(1); // minimum axis-step (interval) is 1
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
-//        xAxis.setTextSize(16f);
-//        xAxis.setDrawAxisLine(true);
-//        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
 
-        YAxis yAxis = barChart.getAxisLeft();
-        yAxis.setAxisMinimum(0);
+        YAxis axisLeft = barChart.getAxisLeft();
+        axisLeft.setValueFormatter(new MyYAxisValueFormatter("%"));
+        axisLeft.setAxisMinimum(0);
+        axisLeft.setDrawGridLines(true);
+
+        YAxis axisRight = barChart.getAxisRight();
+        axisRight.setDrawGridLines(false);
+        axisRight.setDrawAxisLine(false);
+        axisRight.setDrawLabels(false);
     }
 
     class MyXAxisValueFormatter implements IAxisValueFormatter {
@@ -151,6 +202,21 @@ public class ResultsActivity extends AppCompatActivity {
         public String getFormattedValue(float value, AxisBase axis) {
             // "value" represents the position of the label on the axis (x or y)
             return mValues[(int) value];
+        }
+    }
+
+    class MyYAxisValueFormatter implements IAxisValueFormatter {
+
+        private String suffix;
+
+        MyYAxisValueFormatter(String suffix) {
+            this.suffix = suffix;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            // "value" represents the position of the label on the axis (x or y)
+            return Float.toString((int)(value * 100)) + suffix;
         }
     }
 
