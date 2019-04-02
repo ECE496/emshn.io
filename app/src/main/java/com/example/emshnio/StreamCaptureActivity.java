@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,7 +99,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             }
         });
 
-        findViewById(R.id.edit).setOnClickListener(this);
+//        findViewById(R.id.edit).setOnClickListener(this);
 //        findViewById(R.id.capturePicture).setOnClickListener(this);
 //        findViewById(R.id.capturePictureSnapshot).setOnClickListener(this);
         findViewById(R.id.captureVideo).setOnClickListener(this);
@@ -139,7 +140,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
     private void message(String content, boolean important) {
         int length = important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
-        Toast.makeText(this, content, length).show();
+//        Toast.makeText(this, content, length).show();
     }
 
     private void onOpened(CameraOptions options) {
@@ -169,7 +170,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.edit: edit(); break;
+//            case R.id.edit: edit(); break;
 //            case R.id.capturePicture: capturePictureSnapshot(); break;
 //            case R.id.capturePictureSnapshot: capturePictureSnapshot(); break;
             case R.id.captureVideo: backgroundTask(); break;
@@ -449,6 +450,8 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             imgStreamThread.interrupt();
             ImageButton imageButton = (ImageButton)(findViewById(R.id.captureVideo));
             imageButton.setImageResource(R.drawable.ic_video);
+            Switch toggle = (Switch)findViewById(R.id.modeToggle);
+            toggle.setClickable(true);
 
 //        } else if (editText.getVisibility() == View.INVISIBLE) {
         } else {
@@ -467,6 +470,9 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
                 public void run() {
                     ImageButton imageButton = (ImageButton)(findViewById(R.id.captureVideo));
                     imageButton.setImageResource(R.drawable.ic_video_record);
+
+                    Switch toggle = (Switch)findViewById(R.id.modeToggle);
+                    toggle.setClickable(false);
                     count = 0;
                     /* While interrupt not received ... */
                     while (!this.isInterrupted()) {

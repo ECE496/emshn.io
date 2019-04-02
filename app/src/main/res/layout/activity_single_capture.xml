@@ -53,13 +53,18 @@
         android:background="@color/colorPrimary"
         android:weightSum="4">
 
-        <ImageButton
-            android:id="@+id/edit"
+        <!--<ImageButton-->
+            <!--android:id="@+id/edit"-->
+            <!--android:layout_width="56dp"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+            <!--app:srcCompat="@drawable/ic_edit"-->
+            <!--android:visibility="gone"/>-->
+        <Space
+            android:id="@+id/space4"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_edit"
-            android:visibility="gone"/>
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <Space
             android:layout_width="0dp"
