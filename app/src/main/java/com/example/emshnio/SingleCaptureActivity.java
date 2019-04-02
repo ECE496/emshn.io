@@ -309,7 +309,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
 //
 //                                if (pictureStreamOutput != null) {
 //
-//                                    TextView neutral = findViewById(R.id.neutral);
+//                                    TextView first = findViewById(R.id.first);
 //                                    TextView happy = findViewById(R.id.happy);
 //                                    TextView sad = findViewById(R.id.sad);
 //                                    TextView surprise = findViewById(R.id.surprise);
@@ -318,7 +318,7 @@ public class SingleCaptureActivity extends AppCompatActivity implements View.OnC
 //                                    TextView anger = findViewById(R.id.anger);
 //
 //
-//                                    neutral.setText(Float.toString(pictureStreamOutput[0][0]));
+//                                    first.setText(Float.toString(pictureStreamOutput[0][0]));
 //                                    happy.setText(Float.toString(pictureStreamOutput[0][1]));
 //                                    sad.setText(Float.toString(pictureStreamOutput[0][2]));
 //                                    surprise.setText(Float.toString(pictureStreamOutput[0][3]));

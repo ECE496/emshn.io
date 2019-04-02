@@ -39,4 +39,6 @@ dependencies {
 
     api 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    api 'com.google.guava:guava:27.1-android'
 }

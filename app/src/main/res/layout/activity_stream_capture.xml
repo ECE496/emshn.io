@@ -51,48 +51,26 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/neutral"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
+            android:id="@+id/first"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:textAlignment="center"
+            android:textSize="56sp" />
 
 
         <TextView
-            android:id="@+id/happy"
-            android:layout_width="100dp"
+            android:id="@+id/second"
+            android:layout_width="75dp"
             android:layout_height="50dp"
-            android:text="TextView" />
+            android:textAlignment="center"
+            android:textSize="32sp" />
 
         <TextView
-            android:id="@+id/sad"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/surprise"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/fear"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/disgust"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/anger"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="TextView" />
-
+            android:id="@+id/third"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:textAlignment="center"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

@@ -50,7 +50,7 @@ public class ResultsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
 //        assert extras != null;
-//        float neutral = extras.getFloat("neutral");
+//        float first = extras.getFloat("first");
 //        float happy = extras.getFloat("happy");
 //        float sad = extras.getFloat("sad");
 //        float surprise = extras.getFloat("surprise");
@@ -106,7 +106,7 @@ public class ResultsActivity extends AppCompatActivity {
         ArrayList<BarEntry> disgustValue = new ArrayList<>();
         ArrayList<BarEntry> angerValue = new ArrayList<>();
 
-//        entries.add(new BarEntry(0f, neutral));
+//        entries.add(new BarEntry(0f, first));
 //        entries.add(new BarEntry(1f, happy));
 //        entries.add(new BarEntry(2f, sad));
 //        entries.add(new BarEntry(3f, surprise));

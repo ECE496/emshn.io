@@ -1,16 +1,6 @@
 package com.example.emshnio;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PointF;
-import android.media.FaceDetector;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +17,9 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Mode;
 import com.otaliastudios.cameraview.PictureResult;
 
-import org.tensorflow.lite.Interpreter;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +28,8 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
     private CameraView camera;
     private ViewGroup controlPanel;
+
+    String[] emojiMap = {"\uD83D\uDE10", "\uD83D\uDE00", "\uD83D\uDE22", "\uD83D\uDE32", "\uD83D\uDE31", "\uD83E\uDD22", "\uD83D\uDE21"};
 
     // To show stuff in the callback
     private long mCaptureTime;
@@ -55,6 +43,29 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
     boolean onStream;
 
     Inference predictor;
+
+    public static int[] argsort( float[] a) {
+        return argsort(a, true);
+    }
+
+    public static int[] argsort(final float[] a, final boolean ascending) {
+        Integer[] indexes = new Integer[a.length];
+        for (int i = 0; i < indexes.length; i++) {
+            indexes[i] = i;
+        }
+        Arrays.sort(indexes, new Comparator<Integer>() {
+            @Override
+            public int compare(final Integer i1, final Integer i2) {
+                return (ascending ? 1 : -1) * Float.compare(a[i1], a[i2]);
+            }
+        });
+
+        int[] ret = new int[indexes.length];
+        for(int i = 0; i  < ret.length; i++)
+            ret[i] = indexes[i];
+
+        return ret;
+    }
 
 
     @Override
@@ -129,28 +140,6 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
         if (onStream) pictureStreamResult = result;
 
-//        else {
-//
-//            if (camera.isTakingVideo()) {
-//                message("Captured while taking video. Size=" + result.getSize(), false);
-//                return;
-//            }
-//
-//            // This can happen if picture was taken with a gesture.
-//            long callbackTime = System.currentTimeMillis();
-//            if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
-//            float[][] netOutput = predictor.doInference(result);
-//
-//            PicturePreviewActivity.setPictureResult(result);
-//            PicturePreviewActivity.setInferenceResult(netOutput);
-//            ResultsActivity.setInferenceResult(netOutput);
-//
-//            Intent intent = new Intent(StreamCaptureActivity.this, PicturePreviewActivity.class);
-//            intent.putExtra("delay", callbackTime - mCaptureTime);
-//
-//            startActivity(intent);
-//            mCaptureTime = 0;
-//        }
     }
 
 //    private void onVideo(VideoResult video) {
@@ -292,6 +281,7 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
             /* Background thread --> */
             imgStreamThread = new Thread("PictureStream") {
                 private int count = 0;
+                private int[] emoArgs;
 
                 @Override
                 public void run() {
@@ -302,7 +292,12 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
                         /* Get a picture, and do inference on it*/
                         capturePictureSnapshot();
-                        if (pictureStreamResult != null) pictureStreamOutput = predictor.doInference(pictureStreamResult);
+                        if (pictureStreamResult != null) {
+
+                            pictureStreamOutput = predictor.doInference(pictureStreamResult);
+                            emoArgs = argsort(pictureStreamOutput[0], false);
+
+                        }
 
                         /* Put "real-time" results into UI */
                         runOnUiThread(new Runnable() {
@@ -312,22 +307,13 @@ public class StreamCaptureActivity extends AppCompatActivity implements View.OnC
 
                                 if (pictureStreamOutput != null) {
 
-                                    TextView neutral = findViewById(R.id.neutral);
-                                    TextView happy = findViewById(R.id.happy);
-                                    TextView sad = findViewById(R.id.sad);
-                                    TextView surprise = findViewById(R.id.surprise);
-                                    TextView fear = findViewById(R.id.fear);
-                                    TextView disgust = findViewById(R.id.disgust);
-                                    TextView anger = findViewById(R.id.anger);
+                                    TextView first = findViewById(R.id.first);
+                                    TextView second = findViewById(R.id.second);
+                                    TextView third = findViewById(R.id.third);
 
-
-                                    neutral.setText(Float.toString(pictureStreamOutput[0][0]));
-                                    happy.setText(Float.toString(pictureStreamOutput[0][1]));
-                                    sad.setText(Float.toString(pictureStreamOutput[0][2]));
-                                    surprise.setText(Float.toString(pictureStreamOutput[0][3]));
-                                    fear.setText(Float.toString(pictureStreamOutput[0][4]));
-                                    disgust.setText(Float.toString(pictureStreamOutput[0][5]));
-                                    anger.setText(Float.toString(pictureStreamOutput[0][6]));
+                                    first.setText(emojiMap[emoArgs[0]]);
+                                    second.setText(emojiMap[emoArgs[1]]);
+                                    third.setText(emojiMap[emoArgs[2]]);
 
                                 }
                             }

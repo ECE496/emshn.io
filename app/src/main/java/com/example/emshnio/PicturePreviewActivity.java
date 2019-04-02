@@ -46,7 +46,7 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 //
 //        Bundle extras = getIntent().getExtras();
 //
-//        float neutral = extras.getFloat("neutral");
+//        float first = extras.getFloat("first");
 //        float happy = extras.getFloat("happy");
 //        float sad = extras.getFloat("sad");
 //        float surprise = extras.getFloat("surprise");
@@ -54,7 +54,7 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 //        float disgust = extras.getFloat("disgust");
 //        float anger = extras.getFloat("angry");
 //
-//        intent.putExtra("neutral", neutral);
+//        intent.putExtra("first", first);
 //        intent.putExtra("happy", happy);
 //        intent.putExtra("sad", sad);
 //        intent.putExtra("surprise", surprise);
@@ -75,7 +75,7 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 
 //            Bundle extras = getIntent().getExtras();
 //
-//            float neutral = extras.getFloat("neutral");
+//            float first = extras.getFloat("first");
 //            float happy = extras.getFloat("happy");
 //            float sad = extras.getFloat("sad");
 //            float surprise = extras.getFloat("surprise");
@@ -83,7 +83,7 @@ public class PicturePreviewActivity extends Activity implements View.OnClickList
 //            float disgust = extras.getFloat("disgust");
 //            float anger = extras.getFloat("angry");
 //
-//            intent.putExtra("neutral", neutral);
+//            intent.putExtra("first", first);
 //            intent.putExtra("happy", happy);
 //            intent.putExtra("sad", sad);
 //            intent.putExtra("surprise", surprise);
